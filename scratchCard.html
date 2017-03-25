@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <style type="text/css">
+    .center{
+      display: flex;
+      display: -webkit-flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+    }
+    html,body,.gua{
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .frame{
+      position: relative;
+      height: 160px;
+      width:320px;
+    }
+    .frame img,.frame canvas{
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+     <div class="gua center">
+       <div class="frame" style="border:1px solid #000;">
+        <img src="img/1.jpg" height="160" width="320">
+        <canvas></canvas>        
+       </div>
+     </div>
+</body>
+<script type="text/javascript">
+   var canvas=document.querySelector("canvas"),
+       getpen=canvas.getContext("2d");
+   canvas.width=320;
+   canvas.height=160;
+   getpen.fillStyle="gray";
+   getpen.fillRect(0,0,320,160);
+    var mousedown=false;
+    function eventDown(e){
+        e.preventDefault();
+        mousedown=true;
+    }
+
+    function eventUp(e){
+        e.preventDefault();
+        mousedown=false;
+    }
+
+    function eventMove(e){
+        e.preventDefault();
+        if (mousedown) {
+             if (e.changedTouches) {
+                e=e.changedTouches[0];
+             }
+             var x=(e.clientX+document.body.scrollLeft||e.pageX)-getLeft(canvas)||0,
+                y=(e.clientY+document.body.scrollTop||e.pageY)-getTop(canvas)||0;
+             
+
+             with(getpen){
+                beginPath();
+                arc(x,y,15,0,Math.PI*2);
+                fill();
+             }
+        }
+
+    }
+
+    function getTop(e){
+      var setTop=e.offsetTop;
+      if(e.offsetParent!=null){
+        setTop+=getTop(e.offsetParent);
+      }
+      return setTop;
+    }
+
+    function getLeft(e){
+      var setLeft=e.offsetLeft;
+      if(e.offsetParent!=null){
+        setLeft+=getLeft(e.offsetParent);
+      }
+      return setLeft;
+    }
+   canvas.addEventListener("touchstart",eventDown);
+   canvas.addEventListener("touchend",eventUp);
+   canvas.addEventListener("touchmove",eventMove);
+
+   canvas.addEventListener("mousedown",eventDown);
+   canvas.addEventListener("mouseup",eventUp);
+   canvas.addEventListener("mousemove",eventMove);
+
+   getpen.globalCompositeOperation="destination-out";
+</script>
+</html>
